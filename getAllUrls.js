@@ -51,13 +51,13 @@ class Tendrils {
   /**
    * @returns {Promise<[object]>}
    */
-  run(){
-
-    if (this.shouldDedupe){
+  run() {
+    if (this.shouldDedupe) {
       // taking the items in the array and putting them into an object will auto dedupe them for us.
       // this reduce is simply taking every url, adding it as a key to an object and giving that key the value of "Key Value"
       const dedupedUrls = this.urls.reduce((acc, curr) => {
         acc[curr] = 'Key Value'
+
         return acc
       }, {})
 
@@ -66,7 +66,6 @@ class Tendrils {
     }
 
     const response = this.urls.map(url => {
-
       if (this.shouldUrlCheck) {
         // this checks the URL and returns TypeError if invalid as per - https://nodejs.org/docs/latest/api/url.html#url_the_whatwg_url_api
         try {
@@ -75,7 +74,7 @@ class Tendrils {
           this.invalidUrls.push(url)
           return {
             error: true,
-            errorMessage: "Invalid URL",
+            errorMessage: 'Invalid URL',
             errorUrl: url
           }
         }
@@ -92,10 +91,7 @@ class Tendrils {
     })
 
     return Promise.all(response)
-
   }
 }
 
-module.exports = {
-  Tendrils
-}
+module.exports = Tendrils
