@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tomjbast/getAllUrls#readme",
   "dependencies": {
+    "async": "^3.1.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {

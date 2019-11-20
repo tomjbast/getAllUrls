@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const async = require('async')
 
 class GetAllUrls {
 
@@ -26,6 +27,11 @@ class GetAllUrls {
      * @type {boolean}
      */
     this.shouldUrlCheck = false
+
+    /**
+     * @type {number}
+     */
+    this.concurrency = 10
   }
 
   /**
@@ -49,9 +55,19 @@ class GetAllUrls {
   }
 
   /**
+   * @param {number} concurrency
+   * @returns {GetAllUrls}
+   */
+  setConcurrency(concurrency){
+    this.concurrency = concurrency
+
+    return this
+  }
+
+  /**
    * @returns {Promise<[object]>}
    */
-  run() {
+  async run() {
     if (this.shouldDedupe) {
       // taking the items in the array and putting them into an object will auto dedupe them for us.
       // this reduce is simply taking every url, adding it as a key to an object and giving that key the value of "Key Value"
@@ -65,7 +81,7 @@ class GetAllUrls {
       this.urls = Object.keys(dedupedUrls)
     }
 
-    const response = this.urls.map(url => {
+    return async.mapLimit(this.urls, this.concurrency, async url => {
       if (this.shouldUrlCheck) {
         // this checks the URL and returns TypeError if invalid as per - https://nodejs.org/docs/latest/api/url.html#url_the_whatwg_url_api
         try {
@@ -80,18 +96,19 @@ class GetAllUrls {
         }
       }
 
-      return fetch(url)
-        .then(result => result.json())
-        .catch(e => ({
-            error: true,
-            errorMessage: e.message,
-            errorUrl: url
-          })
-        )
+      try {
+        const fetchResponse = await fetch(url)
+        return fetchResponse.json()
+      } catch (e) {
+        return {
+          error: true,
+          errorMessage: e.message,
+          errorUrl: url
+        }
+      }
     })
-
-    return Promise.all(response)
   }
+
 }
 
 module.exports = GetAllUrls
