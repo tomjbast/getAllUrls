@@ -1,6 +1,6 @@
 const fetch = require('node-fetch')
 
-class Tendrils {
+class GetAllUrls {
 
   /**
    * @param {array<string>} urls
@@ -30,7 +30,7 @@ class Tendrils {
 
   /**
    * @param {boolean} shouldDedupe
-   * @returns {Tendrils}
+   * @returns {GetAllUrls}
    */
   dedupe(shouldDedupe) {
     this.shouldDedupe = shouldDedupe
@@ -40,7 +40,7 @@ class Tendrils {
 
   /**
    * @param {boolean} shouldCheck
-   * @returns {Tendrils}
+   * @returns {GetAllUrls}
    */
   checkUrlsAreValid(shouldCheck) {
     this.shouldUrlCheck = shouldCheck
@@ -94,4 +94,4 @@ class Tendrils {
   }
 }
 
-module.exports = Tendrils
+module.exports = GetAllUrls
